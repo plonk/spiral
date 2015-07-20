@@ -1,0 +1,22 @@
+#!/usr/bin/env ruby
+require 'fileutils'
+
+sourcefile = ARGV[0]
+basename = File.basename(sourcefile)
+tmpdir = "/tmp/sandbox-run.#{$$}"
+FileUtils.mkdir_p(tmpdir)
+FileUtils.cp(sourcefile, tmpdir)
+
+makefile = <<EOF
+all: a.out
+	./a.out
+
+a.out: #{basename}
+	g++ -o a.out $< -lm
+EOF
+File.open(tmpdir + "/" + "Makefile", "w") do |f|
+  f.write makefile
+end
+system("docker run -v #{tmpdir}:/prog -w /prog sandbox make -s")
+
+FileUtils.rm_rf(tmpdir)
