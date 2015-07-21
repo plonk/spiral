@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title 実行結果
+
+  h1 実行結果
+
+  h2 出力
+
+  pre
+    = result.blank? ? '(なし)' : result
+
+  h2 エラー
+
+  pre
+    = error.blank? ? '(なし)' : error

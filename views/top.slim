@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title
+      | C++書いてください
+
+  body
+    h1
+      | C++書いてください
+
+    form action="/run" method="POST"
+      textarea name="code" style="width: 640px; height: 480px; display: block"
+        = `cat hello.cc`
+
+      button
+        | 実行

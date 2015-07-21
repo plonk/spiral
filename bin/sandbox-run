@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'fileutils'
+require 'timeout'
 
 sourcefile = ARGV[0]
 basename = File.basename(sourcefile)
@@ -12,11 +13,21 @@ all: a.out
 	./a.out
 
 a.out: #{basename}
-	g++ -o a.out $< -lm
+	g++ -Wall -std=c++11 -o a.out $< -lm
 EOF
 File.open(tmpdir + "/" + "Makefile", "w") do |f|
   f.write makefile
 end
-system("docker run -v #{tmpdir}:/prog -w /prog sandbox make -s")
+id = `docker run -d --net=none -v #{tmpdir}:/prog -w /prog plonk/sandbox:latest make -s`.chomp
+
+begin
+  Timeout.timeout(10) do 
+    `docker wait #{id}`
+    system('docker', 'logs', id)
+  end
+rescue
+  `docker stop #{id}`
+  STDERR.puts("(時間切れ)")
+end
 
 FileUtils.rm_rf(tmpdir)

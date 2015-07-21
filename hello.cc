@@ -1,6 +1,9 @@
-#include <cstdio>
+#include <iostream>
+
+using namespace std;
 
 int main()
 {
-    printf("Hello World\n");
+    auto msg = "Hello World";
+    cout << msg << endl;
 }
